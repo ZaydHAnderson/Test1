@@ -53,3 +53,16 @@ d <- occ_download_get('0012239-240202131308920', path="data/") %>%
   
   fData<-fData %>%
     cc_sea(lon="decimalLongitude", lat = "decimalLatitude")
+  
+  #remove duplicates
+  fData<-fData %>%
+    distinct(decimalLongitude, decimalLatitude, speciesKey, datasetKey, .keep_all = TRUE)
+  
+  #one fell swoop:
+  cleanData <-d %>%
+    filter(!is.na(decimalLatitude), !is.na(decimalLongitude)) %>%
+    filter(countryCode %in% c("US", "CA", "MX") %>%
+    filter(!basisOfRecord %in% c("FOSSIL_SPECIMEN", "LIVING_SPECIMEN")) %>%
+    cc_sea(lon="decimalLongitude", lat = "decimalLatitude") %>%
+    distinct(decimalLongitude, decimalLatitude, speciesKey, datasetKey, .keep_all = TRUE)
+  
